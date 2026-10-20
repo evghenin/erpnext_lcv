@@ -3,12 +3,12 @@ app_title = "Landed Cost Advanced"
 app_publisher = "Evgheni Nemerenco"
 app_description = "Advanced landed cost allocation for ERPNext, supporting weight-based and volume-based distribution with configurable allocation methods for individual expense lines."
 app_email = "evgheni.nemerenco@gmail.com"
-app_license = "mit"
+app_license = "GPL-3.0"
 
 # Apps
 # ------------------
 
-# required_apps = []
+required_apps = ["erpnext"]
 
 # Each item in the list will be shown as an app in the apps page
 # add_to_apps_screen = [
@@ -43,7 +43,11 @@ app_license = "mit"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {
+	"Landed Cost Voucher": "public/js/landed_cost_voucher.js",
+	"Item": "public/js/item.js",
+	"Stock Settings": "public/js/stock_settings.js",
+}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -83,7 +87,7 @@ app_license = "mit"
 # ------------
 
 # before_install = "erpnext_lcv.install.before_install"
-# after_install = "erpnext_lcv.install.after_install"
+after_install = "erpnext_lcv.install.after_install"
 
 # Uninstallation
 # ------------
@@ -129,21 +133,23 @@ app_license = "mit"
 # ---------------
 # Override standard doctype classes
 
-# override_doctype_class = {
-# 	"ToDo": "custom_app.overrides.CustomToDo"
-# }
+override_doctype_class = {
+	"Landed Cost Voucher": "erpnext_lcv.overrides.landed_cost_voucher.LandedCostVoucherAdvanced",
+}
 
 # Document Events
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"Item": {
+		"validate": "erpnext_lcv.landed_cost_advanced.measurements.validate_item_measurement_fields",
+	},
+}
+
+fixtures = ["custom_field.json", "property_setter.json"]
+
+boot_session = "erpnext_lcv.boot.boot_session"
 
 # Scheduled Tasks
 # ---------------
