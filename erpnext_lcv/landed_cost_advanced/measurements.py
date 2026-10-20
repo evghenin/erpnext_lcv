@@ -170,7 +170,7 @@ def _problem_line(item, tax, method, reason):
 	)
 
 
-def validate_item_measurement_fields(item):
+def validate_item_measurement_fields(item, method=None):
 	"""Item.validate hook: value and UOM together, UOM inside the configured category."""
 	settings = get_measurement_settings()
 	_validate_pair(

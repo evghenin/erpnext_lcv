@@ -38,6 +38,7 @@ class LandedCostVoucherAdvanced(LandedCostVoucher):
 		self.assert_allocation_possible()
 		super().on_submit()
 
+	@frappe.whitelist()
 	def set_applicable_charges_on_item(self):
 		if self.distribute_charges_based_on == "Distribute Manually":
 			return
