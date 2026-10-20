@@ -15,7 +15,7 @@ CUSTOM_FIELDS = {
 			"fieldname": "inventory_tab",
 			"fieldtype": "Tab Break",
 			"label": "Inventory",
-			"insert_after": "quality_tab",
+			"insert_after": "allow_to_make_quality_inspection_after_purchase_or_delivery",
 		},
 		{
 			"fieldname": "inventory_measurement_section",
