@@ -69,7 +69,7 @@ After a successful submit, ERPNext posts the voucher as usual: purchase receipt 
 
 ```bash
 cd $PATH_TO_YOUR_BENCH
-bench get-app $URL_OF_THIS_REPO --branch develop
+bench get-app $URL_OF_THIS_REPO --branch main
 bench install-app erpnext_lcv
 ```
 
