@@ -37,7 +37,7 @@ A value and its UOM must be saved together. The UOM must belong to the category 
 - **Weight UOM Category** and **Weight Base UOM**
 - **Volume UOM Category** and **Volume Base UOM**
 
-Landed cost totals are stored in the base units. On install, empty settings are filled with **Mass / Kg** and **Volume / Litre** when those records already exist. Base UOM links only list units from the selected category.
+Landed cost totals are stored in the base units. On install, empty settings are filled with **Mass / Kg** and **Volume / Cubic Meter** when those records already exist. Base UOM links only list units from the selected category.
 
 ### Filling landed cost rows
 
@@ -73,7 +73,7 @@ bench get-app $URL_OF_THIS_REPO --branch develop
 bench install-app erpnext_lcv
 ```
 
-Install creates the custom fields, extends the voucher distribution options, and sets the default weight and volume units when Mass, Kg, Volume, and Litre already exist.
+Install creates the custom fields, extends the voucher distribution options, and sets the default weight and volume units when Mass, Kg, Volume, and Cubic Meter already exist.
 
 Before allocating by weight or volume, confirm **Stock Settings** and make sure each stock item has a per-unit value and a UOM in the matching category.
 

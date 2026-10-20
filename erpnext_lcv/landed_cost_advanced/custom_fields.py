@@ -167,7 +167,7 @@ def ensure_customizations():
 
 
 def set_default_stock_settings():
-	"""Set Mass/Kg and Volume/Litre when those records already exist."""
+	"""Set Mass/Kg and Volume/Cubic Meter when those records already exist."""
 	if not frappe.db.exists("DocType", "Stock Settings"):
 		return
 	settings = frappe.get_single("Stock Settings")
@@ -185,8 +185,8 @@ def set_default_stock_settings():
 			settings.weight_base_uom = "Kg"
 			changed = True
 	if settings.get("volume_uom_category") and not settings.get("volume_base_uom"):
-		if _uom_in_category("Litre", settings.volume_uom_category):
-			settings.volume_base_uom = "Litre"
+		if _uom_in_category("Cubic Meter", settings.volume_uom_category):
+			settings.volume_base_uom = "Cubic Meter"
 			changed = True
 
 	if changed:
