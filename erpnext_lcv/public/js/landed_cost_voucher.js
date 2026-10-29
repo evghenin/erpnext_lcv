@@ -120,6 +120,8 @@ function lcv_apply_measurement(frm, cdt, cdn, force) {
 			qty: row.qty,
 			weight_edited: row.weight_edited ? 1 : 0,
 			volume_edited: row.volume_edited ? 1 : 0,
+			purchase_receipt_item: row.purchase_receipt_item,
+			receipt_document_type: row.receipt_document_type,
 		},
 		callback(r) {
 			if (!r.message) {

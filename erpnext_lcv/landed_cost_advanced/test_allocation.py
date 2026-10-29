@@ -6,6 +6,8 @@ from frappe.tests.utils import FrappeTestCase
 
 from erpnext_lcv.landed_cost_advanced.allocate import allocate_taxes, resolve_method
 from erpnext_lcv.landed_cost_advanced.measurements import (
+	KINDS,
+	_calculate,
 	allocation_errors,
 	validate_item_measurement_fields,
 )
@@ -143,6 +145,16 @@ class TestLandedCostAllocation(FrappeTestCase):
 			settings.volume_uom_category = previous[2]
 			settings.volume_base_uom = previous[3]
 			settings.save()
+
+	def test_weight_uses_receipt_conversion_factor(self):
+		kind = next(row for row in KINDS if row["method"] == "Weight")
+		settings = {"weight_uom_category": "Mass", "weight_base_uom": "Kg"}
+		master = {"weight_per_unit": 2, "weight_uom": "Kg"}
+		records = {"Weight": MASS_RECORDS}
+		stock_uom_row = {"qty": 3, "conversion_factor": 1}
+		pack_row = {"qty": 3, "conversion_factor": 12}
+		self.assertEqual(_calculate(stock_uom_row, master, settings, records, kind)[0], 6)
+		self.assertEqual(_calculate(pack_row, master, settings, records, kind)[0], 72)
 
 	def test_conversion_uses_category_hub(self):
 		self.assertEqual(conversion_factor("Gram", "Tonne", MASS_RECORDS), 0.001 / 1000)
