@@ -94,12 +94,35 @@ def _calculate(row, master, settings, records_by_kind, kind):
 	if per_unit in (None, ""):
 		return None, base_uom, "missing value"
 	records = records_by_kind.get(kind["method"]) or []
-	converted = convert_quantity(flt(row.get("qty")) * flt(per_unit), item_uom, base_uom, records)
+	converted = convert_quantity(_stock_qty(row) * flt(per_unit), item_uom, base_uom, records)
 	if converted is None:
 		return None, base_uom, "no conversion"
 	if converted <= 0:
 		return converted, base_uom, "zero"
 	return converted, base_uom, None
+
+
+def _stock_qty(row):
+	"""Qty in the item stock UOM. Item weight and volume are per stock UOM."""
+	qty = flt(row.get("qty"))
+	factor = row.get("conversion_factor")
+	if factor in (None, ""):
+		factor = _receipt_conversion_factor(row)
+	factor = flt(factor)
+	if factor <= 0:
+		factor = 1
+	return qty * factor
+
+
+def _receipt_conversion_factor(row):
+	name = row.get("purchase_receipt_item")
+	parenttype = row.get("receipt_document_type")
+	if not name or not parenttype:
+		return 1
+	child = f"{parenttype} Item"
+	if not frappe.get_meta(child).has_field("conversion_factor"):
+		return 1
+	return frappe.db.get_value(child, name, "conversion_factor")
 
 
 def measurement_problem(row, master, settings, records_by_kind, kind):
@@ -254,14 +277,29 @@ def uom_query(doctype, txt, searchfield, start, page_len, filters):
 
 
 @frappe.whitelist()
-def recalculate_item_row(item_code, qty, weight_edited=0, volume_edited=0):
+def recalculate_item_row(
+	item_code,
+	qty,
+	weight_edited=0,
+	volume_edited=0,
+	conversion_factor=None,
+	purchase_receipt_item=None,
+	receipt_document_type=None,
+):
 	"""Values for one landed cost row. Edited sides are left for the client."""
 	settings = get_measurement_settings()
 	master = item_measurement_master(item_code)
 	records_by_kind = {
 		kind["method"]: category_records(settings.get(kind["category_field"])) for kind in KINDS
 	}
-	row = frappe._dict(qty=qty, weight_edited=cint(weight_edited), volume_edited=cint(volume_edited))
+	row = frappe._dict(
+		qty=qty,
+		weight_edited=cint(weight_edited),
+		volume_edited=cint(volume_edited),
+		conversion_factor=conversion_factor,
+		purchase_receipt_item=purchase_receipt_item,
+		receipt_document_type=receipt_document_type,
+	)
 	result = {}
 	for kind in KINDS:
 		if cint(row.get(kind["edited_field"])):
